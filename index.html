@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Circle Reveal Button</title>
+  <style>
+    :root {
+      --btn-bg: #000;
+      --btn-color: #fff;          /* default text color */
+      --hover-text-color: #000;   /* text turns black on hover */
+      --hover-color: #51F0ED;      /* ripple color */
+      --duration-in: 0.2s;
+      --duration-out: 0.4s;
+      --border-radius: 6px;
+      --btn-height: 50px;
+      --btn-padding: 0 30px;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4f4f4;
+      font-family: sans-serif;
+    }
+
+    .circle-button {
+      position: relative;
+      overflow: hidden;
+      background: var(--btn-bg);
+      color: var(--btn-color);
+      border: none;
+      padding: var(--btn-padding);
+      height: var(--btn-height);
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .circle-button:hover {
+      color: var(--hover-text-color);
+    }
+
+    /* ensure the text is always on top */
+    .circle-button .btn-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .circle-button .circle {
+      position: absolute;
+      pointer-events: none;
+      background: var(--hover-color);
+      border-radius: 50%;
+      transform: scale(0);
+      will-change: transform;
+      z-index: 0;                /* keep the ripple behind the text */
+    }
+  </style>
+</head>
+<body>
+
+  <button class="circle-button">
+    <span class="btn-text">Start a project</span>
+    <div class="circle"></div>
+  </button>
+
+  <script>
+    const btn = document.querySelector('.circle-button');
+    const circle = btn.querySelector('.circle');
+
+    btn.addEventListener('mouseenter', e => {
+      const { width, height, left, top } = btn.getBoundingClientRect();
+      const x = e.clientX - left;
+      const y = e.clientY - top;
+      const dia = Math.hypot(width, height) * 2;
+
+      // size & position the circle at entry point
+      circle.style.width = circle.style.height = dia + 'px';
+      circle.style.left = x - dia/2 + 'px';
+      circle.style.top  = y - dia/2 + 'px';
+
+      // expand quickly
+      circle.style.transition = `transform var(--duration-in) ease-out`;
+      requestAnimationFrame(() => {
+        circle.style.transform = 'scale(1)';
+      });
+    });
+
+    btn.addEventListener('mouseleave', e => {
+      const { width, height, left, top } = btn.getBoundingClientRect();
+      const x = e.clientX - left;
+      const y = e.clientY - top;
+      const dia = parseFloat(circle.style.width);
+
+      // snap circle back to leave-point without animating
+      circle.style.transition = 'none';
+      circle.style.left = x - dia/2 + 'px';
+      circle.style.top  = y - dia/2 + 'px';
+
+      // then shrink from there
+      requestAnimationFrame(() => {
+        circle.style.transition = `transform var(--duration-out) ease-in`;
+        circle.style.transform = 'scale(0)';
+      });
+    });
+  </script>
+
+</body>
+</html>

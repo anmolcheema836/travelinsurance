@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Linear Slider</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
+   
+    <!-- Fonts. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+   
+    <!-- CSS. -->
+    <link rel="stylesheet" href="./content/global.css">
+    <style>
+      /* Add styles for captions to match the desired look */
+      .fwdls.caption {
+        position: absolute;
+        bottom: 30px; /* Adjust as needed */
+        left: 30px;   /* Adjust as needed */
+        color: white;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px; /* Adjust */
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        pointer-events: none; /* Allow clicks to pass through to the item */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      }
+
+      /* FWDLS would ideally add a class like '.fwdls-item-active' or '.fwdls-item-focused'
+         to the wrapper of the currently focused slide. We'll assume it does for caption visibility.
+         If not, FWDLS would need an option to show/hide captions on focus.
+      */
+      .fwdls-item-active .fwdls.caption { /* Or whatever class FWDLS uses for the active/focused item's container */
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Styling for the control buttons if you want them on screen */
+      .controls {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 10000; /* Ensure they are above the slider */
+        display: flex;
+        gap: 10px;
+      }
+      .controls button {
+        padding: 10px 15px;
+        background-color: #333;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .controls button:hover {
+        background-color: #555;
+      }
+
+    </style>
+
+    <!-- JavaScript for FWDLS (assuming FWDLS.js makes FWDLS class global or it's handled by the module) -->
+    <script type="module" crossorigin src="src/FWDLS.js"></script>
+  </head>
+
+  <body style="background: #1c1c1c;">
+
+    <!-- Slider parent/holder. -->
+    <div id="myDiv" style="width: 100%; height: 100vh;"></div>
+
+    <div class="controls">
+      <button onclick="if(fwdls0) fwdls0.goToItem(4)">Go to item 4 (0-indexed)</button>
+      <button onclick="if(fwdls0) fwdls0.destroy()">Destroy</button>
+      <!-- Example: Button to toggle active item state -->
+      <button onclick="if(fwdls0 && fwdls0.isItemFocused()) fwdls0.unfocusItem(); else if (fwdls0) fwdls0.focusItem(fwdls0.getCurrentId());">Toggle Focus Current</button>
+    </div>
+    
+    <!-- Slider data (remains the same) -->
+    <div id="sliderData" style="display: none;">
+        <!-- item 0 -->
+        <div data-src="media/videos/2.mp4" data-width="1280" data-height="720" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Urban Rhythms</p></div>
+        </div> 
+        <!-- item 1 -->
+       <div data-src="media/images/1.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Mountain Majesty</p></div>
+       </div>
+       <!-- item 2 -->
+       <div data-src="media/images/2.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Coastal Serenity</p></div>
+        </div>
+        <!-- item 3 -->
+        <div data-src="media/images/3.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Forest Path</p></div>
+        </div>
+        <!-- item 4 -->
+        <div data-src="media/images/4.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">City Lights</p></div>
+        </div>
+        <!-- ... rest of your items ... ensure captions are unique or more descriptive if needed -->
+        <div data-src="media/images/5.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Abstract Flow</p></div>
+        </div>
+        <div data-src="media/images/6.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Desert Sands</p></div>
+        </div>
+        <div data-src="media/images/7.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Winterscape</p></div>
+        </div>
+        <div data-src="media/images/8.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Ocean Waves</p></div>
+        </div>
+        <div data-src="media/videos/1.mp4" data-width="1280" data-height="720" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Skater Life</p></div>
+        </div>
+        <div data-src="media/images/9.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Ancient Ruins</p></div>
+        </div>
+        <div data-src="media/images/10.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Retro Vibes</p></div>
+        </div>
+        <div data-src="media/images/11.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Neon Glow</p></div>
+        </div>
+        <div data-src="media/images/12.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Rural Fields</p></div>
+        </div>
+        <div data-src="media/videos/5.mp4" data-width="1280" data-height="720" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Parkour Flow</p></div>
+        </div>
+        <div data-src="media/images/13.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Sunset Silhouette</p></div>
+        </div>
+        <div data-src="media/images/14.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Modern Architecture</p></div>
+        </div>
+        <div data-src="media/images/15.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Galaxy View</p></div>
+        </div>
+        <div data-src="media/images/16.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Street Art</p></div>
+        </div>
+        <div data-src="media/videos/3.mp4" data-width="1280" data-height="720" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Time Lapse City</p></div>
+        </div>
+        <div data-src="media/images/17.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Tranquil Lake</p></div>
+        </div>
+        <div data-src="media/images/18.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Library Stacks</p></div>
+        </div>
+        <div data-src="media/images/19.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Vintage Car</p></div>
+        </div>
+        <div data-src="media/images/20.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Autumn Leaves</p></div>
+        </div>
+        <div data-src="media/images/21.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Northern Lights</p></div>
+        </div>
+        <div data-src="media/videos/4.mp4" data-width="1280" data-height="720" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Workout Intensity</p></div>
+        </div>
+        <div data-src="media/images/22.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Industrial Design</p></div>
+        </div>
+        <div data-src="media/images/23.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Sunny Beach</p></div>
+        </div>
+        <div data-src="media/images/24.jpg" data-width="1920" data-height="1080" data-url="https://fwdapps.net" data-target="_blank">
+            <div data-caption=""><p class="fwdls caption">Historic Town</p></div>
+        </div>
+    </div>
+
+    <script type="module">
+      let fwdls0; // Declare fwdls0 in a scope accessible by the buttons
+
+      function initSlider() {
+        // Check if FWDLS is available
+        if (typeof FWDLS === "undefined") {
+          console.warn("FWDLS library not yet loaded. Retrying in 100ms...");
+          setTimeout(initSlider, 100);
+          return;
+        }
+
+        fwdls0 = new FWDLS({
+          // ESSENTIAL
+          instanceName: "fwdls0", // MUST match the variable name used in button onclicks if it's for global access
+          parentId: "myDiv",
+          dataId: "sliderData",
+
+          // APPEARANCE & LAYOUT (to match aristidebenoist.com)
+          displayType: "fluidwidth", // Or "responsive", assuming it makes it fill parent
+          width: "100%",
+          height: "100%",
+          autoScale: true,          // For responsiveness
+          backgroundColor: "transparent", // Use body background color
+          
+          itemAlignment: "center",  // Crucial for centering items
+          innerOffset: 0.5,         // 0.5 should center the entire strip of items; helps symmetrical perspective
+          
+          // NORMAL ITEM STATE (GALLERY VIEW)
+          itemWidth: 350,           // Approximate width of items in the gallery row
+          itemHeight: 500,          // Approximate height of items in the gallery row
+          itemXSpace: -150,         // Negative value for overlap and angled perspective effect
+          itemYSpace: 0,
+          itemXRotation: 0,         // No rotation around X-axis
+          itemYRotation: 35,        // Key for the angled look (degrees)
+          itemZMultiplier: 120,     // How "deep" the perspective effect is based on Y rotation.
+          itemSmallestScale: 0.7,   // Smallest scale for items far from center (if supported)
+          itemOpacityOffset: 0.3,   // Reduce opacity for items far from center (e.g. 0.3 means 30% opaque)
+          fadePastEdge: true,       // Fade items that go off-screen (if supported)
+
+
+          // FOCUSED/CLICKED ITEM STATE
+          useFocus: "yes", // Assuming there's a "focus" state separate from generic "maximize"
+          focusedItemWidth: "80%", // Width of the focused item (e.g., 80% of slider width)
+                                    // Or a fixed pixel value like 900
+          focusedItemHeight: "80%",// Height of the focused item (e.g., 80% of slider height)
+                                    // Or calculate aspect ratio, or set "auto" if supported
+          maintainOriginalAspectRatioOnFocus: true, // Important if width/height are percentages
+
+          focusedItemXSpace: 0,     // Horizontal spacing for focused item (should be 0 for centered)
+          focusedItemYSpace: 0,     // Vertical spacing
+          focusedItemXRotation: 0,  // Item should be flat when focused
+          focusedItemYRotation: 0,  // Item should be flat when focused
+          focusedItemZDist: 10,     // Optional: bring it slightly forward on Z axis when focused
+
+          // ACTION ON CLICK
+          itemClickAction: "focus", // "focus", "maximize", "gotourl", "none". We want 'focus'.
+                                    // If item is already focused, another click should 'unfocus'.
+                                    // Or, the library might have `itemClickUnfocuses: true`
+
+          // ANIMATION
+          transitionDuration: 0.7,  // Seconds (e.g., 0.7 for 700ms)
+          transitionType: 'cubic-bezier(0.25, 0.8, 0.25, 1)', // Smooth easing
+
+          // INTERACTION
+          dragScanDirection: "horizontal",
+          isMobileDrag: "auto",         // Enable drag on mobile
+          mouseWheelScroll: true,
+          mouseWheelScrollSpeed: 1.5,   // Adjust sensitivity
+
+          // CAPTIONS (if FWDLS handles them beyond just finding data-caption)
+          showCaption: true,        // Enable captions
+          captionShowOn: "focus",   // Show caption when item is focused (relates to CSS .fwdls-item-active)
+          // The CSS above attempts to handle caption display based on a hypothetical active class.
+
+          // VIDEO SETTINGS
+          videoAutoPlay: false,      // Don't autoplay videos in gallery
+          videoAutoPlayFocused: true,// Autoplay video when item is focused
+          videoLoop: false,
+          videoVolume: 0.7,
+
+          // PRELOADING
+          preloadItems: 3, // Number of items to preload left/right of current
+
+          // --- FIXES FOR YOUR ISSUES ---
+
+          // 1. Offset on click:
+          // - `itemAlignment: "center"` and `innerOffset: 0.5` are primary for the overall strip.
+          // - For the focused item, ensure `focusedItemXRotation: 0`, `focusedItemYRotation: 0`.
+          // - The library itself must correctly calculate the translation to center the `focusedItemWidth`.
+          // - If there's an option like `centerFocusedItemPrecisely: true` or `focusedItemAlignment: "center"`, enable it.
+          // - This problem often arises if the library doesn't account for the current scroll/drag offset
+          //   of the gallery strip when calculating the focused item's target position.
+          //   A well-built library should handle this with the above "focus" settings.
+
+          // 2. Drag speed inconsistency (when maximized/focused vs. minimized):
+          // - This often happens if drag deltas are not normalized against item/slider scaling.
+          // - Look for options like:
+          //   `normalizeDragSpeedWithScale: true` (hypothetical, but what's needed)
+          //   `focusedStateDragSensitivity: 1` (to match normal state sensitivity, if such an option exists)
+          //   `panSpeed`, `dragSpeedMultiplier` might have separate values for focused/normal states.
+          // - If the "maximized" state is just a scaled version of the slider, then mouse
+          //   coordinates need to be adjusted by that scale factor for consistent drag feel.
+          //   Using the "focus" state properties (`focusedItemWidth`, etc.) is generally better
+          //   than a generic "maximize" which might just scale the whole thing.
+          // - The key is that the perceived distance the image moves for a given physical drag
+          //   distance of the mouse/finger should feel the same.
+          //   A property like `focusedItemZDragReverse` could unexpectedly affect X/Y drag perception
+          //   if it's tied to overall transform calculations. Setting it to `false` might be a try.
+           focusedItemZDragReverse: false, 
+        });
+
+        // For the buttons to work, fwdls0 must be accessible globally
+        window.fwdls0 = fwdls0; 
+        
+        // Example of listening to an event if the library supports it
+        if (fwdls0.addListener) {
+            fwdls0.addListener(FWDLS.ITEM_FOCUS, (itemId) => {
+                console.log("Item focused:", itemId);
+                // You could manually manage caption visibility here if CSS doesn't work
+                // or if FWDLS doesn't add an 'active' class.
+            });
+            fwdls0.addListener(FWDLS.ITEM_UNFOCUS, (itemId) => {
+                console.log("Item unfocused:", itemId);
+            });
+        }
+
+      }
+
+      // Initialize slider after FWDLS.js is loaded and DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSlider);
+      } else {
+        initSlider(); // DOMContentLoaded has already fired
+      }
+    </script>
+  </body>
+</html>
