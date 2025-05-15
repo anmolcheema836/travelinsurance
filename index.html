@@ -3,22 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Circle Reveal Button</title>
+  <title>Circle Reveal Button with Custom Cursor</title>
   <style>
     :root {
       --btn-bg: #000;
-      --btn-color: #fff;          /* default text color */
-      --hover-text-color: #000;   /* text turns black on hover */
-      --hover-color: #51F0ED;      /* ripple color */
+      --btn-color: #fff;
+      --hover-text-color: #000;
+      --hover-color: #51F0ED;    /* ripple color */
       --duration-in: 0.2s;
       --duration-out: 0.4s;
-      --border-radius: 6px;
       --btn-height: 50px;
       --btn-padding: 0 30px;
+      --cursor-size: 26px;       /* small dot */
+      --cursor-hover-size: 46px; /* big ring */
     }
 
+    /* hide the native cursor everywhere */
     body {
       margin: 0;
+      cursor: none;
       height: 100vh;
       display: flex;
       align-items: center;
@@ -27,6 +30,7 @@
       font-family: sans-serif;
     }
 
+    /* The button and its ripple */
     .circle-button {
       position: relative;
       overflow: hidden;
@@ -38,20 +42,17 @@
       font-size: 16px;
       font-weight: bold;
       border-radius: 100px;
-      cursor: pointer;
+      cursor: none;
       transition: color 0.2s ease;
+      z-index: 1;              /* text & arrow above ripple */
     }
-
     .circle-button:hover {
       color: var(--hover-text-color);
     }
-
-    /* ensure the text is always on top */
     .circle-button .btn-text {
       position: relative;
       z-index: 1;
     }
-
     .circle-button .circle {
       position: absolute;
       pointer-events: none;
@@ -59,7 +60,33 @@
       border-radius: 50%;
       transform: scale(0);
       will-change: transform;
-      z-index: 0;                /* keep the ripple behind the text */
+      z-index: 0;              /* ripple behind everything */
+    }
+
+    /* Custom cursor element */
+    .custom-cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--cursor-size);
+      height: var(--cursor-size);
+      background: #000;
+      border: none;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition:
+        width var(--duration-in) ease,
+        height var(--duration-in) ease,
+        border var(--duration-in) ease,
+        background var(--duration-in) ease;
+      z-index: 9999;
+    }
+    /* When hovering the button, turn cursor into ring */
+    .custom-cursor.hover {
+      width: var(--cursor-hover-size);
+      height: var(--cursor-hover-size);
+      background: transparent;
+      border: 2px solid #000;
     }
   </style>
 </head>
@@ -69,45 +96,52 @@
     <span class="btn-text">Start a project</span>
     <div class="circle"></div>
   </button>
+  <div class="custom-cursor"></div>
 
   <script>
     const btn = document.querySelector('.circle-button');
     const circle = btn.querySelector('.circle');
+    const cursor = document.querySelector('.custom-cursor');
 
+    // Update custom cursor position everywhere
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+
+    // Button ripple logic (exactly as before)
     btn.addEventListener('mouseenter', e => {
       const { width, height, left, top } = btn.getBoundingClientRect();
       const x = e.clientX - left;
       const y = e.clientY - top;
       const dia = Math.hypot(width, height) * 2;
 
-      // size & position the circle at entry point
       circle.style.width = circle.style.height = dia + 'px';
       circle.style.left = x - dia/2 + 'px';
       circle.style.top  = y - dia/2 + 'px';
-
-      // expand quickly
       circle.style.transition = `transform var(--duration-in) ease-out`;
       requestAnimationFrame(() => {
         circle.style.transform = 'scale(1)';
       });
+
+      // enlarge custom cursor to ring
+      cursor.classList.add('hover');
     });
 
-    btn.addEventListener('mouseleave', e => {
-      const { width, height, left, top } = btn.getBoundingClientRect();
+    btn.addEventListener('mousemove', e => {
+      // update ripple position as pointer moves inside button
+      const { left, top } = btn.getBoundingClientRect();
       const x = e.clientX - left;
       const y = e.clientY - top;
       const dia = parseFloat(circle.style.width);
-
-      // snap circle back to leave-point without animating
-      circle.style.transition = 'none';
       circle.style.left = x - dia/2 + 'px';
       circle.style.top  = y - dia/2 + 'px';
+    });
 
-      // then shrink from there
-      requestAnimationFrame(() => {
-        circle.style.transition = `transform var(--duration-out) ease-in`;
-        circle.style.transform = 'scale(0)';
-      });
+    btn.addEventListener('mouseleave', e => {
+      circle.style.transition = `transform var(--duration-out) ease-in`;
+      circle.style.transform = 'scale(0)';
+      cursor.classList.remove('hover');
     });
   </script>
 
